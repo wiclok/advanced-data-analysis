@@ -51,6 +51,7 @@ def insert_data(cursor, employees):
       for employee in employees:
          cursor.execute(insert_data_query, employee[1:])
       cursor._connection.commit()
+      cursor.close()
       print("Registros insertados con éxito.")
    else:
       print("La tabla ya contiene datos. No se insertaron nuevos registros.")
