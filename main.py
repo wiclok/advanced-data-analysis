@@ -42,12 +42,18 @@ def read_csv(filename):
       return Headboard, employees
 
 def insert_data(cursor, employees):
+   # Verificar si la tabla está vacía
+   cursor.execute('SELECT COUNT(*) FROM EmployeePerformance')
+   count = cursor.fetchone()[0]
 
-   insert_data = 'INSERT INTO employeeperformance (id, employee_id, department, performance_score, years_with_company, salary) VALUES (%s, %s, %s, %s, %s, %s)'
-   for employee in employees:
-      cursor.execute(insert_data, employee)
-   cursor._connection.commit()
-   print("Registros insertados con éxito.")
+   if count == 0:
+      insert_data_query = 'INSERT INTO EmployeePerformance (employee_id, department, performance_score, years_with_company, salary) VALUES (%s, %s, %s, %s, %s)'
+      for employee in employees:
+         cursor.execute(insert_data_query, employee[1:])
+      cursor._connection.commit()
+      print("Registros insertados con éxito.")
+   else:
+      print("La tabla ya contiene datos. No se insertaron nuevos registros.")
 
 
 def run_program():
