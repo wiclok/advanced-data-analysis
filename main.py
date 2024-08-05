@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 def connect_to_mysql():
    try:
       conn = mysql.connector.connect(
-         host="localhost",
-         user="root",
+         host="tu_host",
+         user="tu_usuario",
          password=""
       )
       print("MySQL connection successful")
@@ -60,8 +60,8 @@ def insert_data(cursor, employees):
 
 def extract_data():
    conn = mysql.connector.connect(
-      host='localhost',
-      user='root',
+      host='tu_host',
+      user='tu_usuario',
       password='',
       database="CompanyData"
    )
