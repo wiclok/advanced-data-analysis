@@ -1,4 +1,5 @@
 import mysql.connector
+import csv
 
 def connect_to_mysql():
    try:
@@ -31,6 +32,15 @@ def create_table(cursor):
    )
    print('EmployeePerformance table created/exists')
 
+def read_csv(filename):
+   with open(filename, 'r') as archive:
+      reader = csv.reader(archive, delimiter=',', quotechar='"')
+      Headboard = next(reader)
+      employees = []
+      for row in reader:
+         employees.append(tuple(row))
+      return Headboard, employees
+
 def run_program():
    conn = connect_to_mysql()
    if conn:
@@ -38,6 +48,8 @@ def run_program():
       create_database(cursor)
       conn.database = 'CompanyData'
       create_table(cursor)
+      filename = 'MOCK_DATA.csv'
+      headboard, employees = read_csv(filename)
 
 if __name__ == '__main__':
    run_program()
