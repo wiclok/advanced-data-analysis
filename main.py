@@ -41,6 +41,15 @@ def read_csv(filename):
          employees.append(tuple(row))
       return Headboard, employees
 
+def insert_data(cursor, employees):
+
+   insert_data = 'INSERT INTO employeeperformance (id, employee_id, department, performance_score, years_with_company, salary) VALUES (%s, %s, %s, %s, %s, %s)'
+   for employee in employees:
+      cursor.execute(insert_data, employee)
+   cursor._connection.commit()
+   print("Registros insertados con éxito.")
+
+
 def run_program():
    conn = connect_to_mysql()
    if conn:
@@ -50,6 +59,7 @@ def run_program():
       create_table(cursor)
       filename = 'MOCK_DATA.csv'
       headboard, employees = read_csv(filename)
+      insert_data(cursor, employees)
 
 if __name__ == '__main__':
    run_program()
