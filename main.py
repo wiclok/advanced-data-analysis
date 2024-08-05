@@ -16,12 +16,28 @@ def connect_to_mysql():
 def create_database(cursor):
    cursor.execute("CREATE DATABASE IF NOT EXISTS CompanyData")
    print('CompanyData database created/exists')
-   
+
+def create_table(cursor):
+   cursor.execute('''
+   CREATE TABLE IF NOT EXISTS EmployeePerformance(
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      employee_id INT,
+      department VARCHAR(255),
+      performance_score FLOAT,
+      years_with_company INT,
+      salary FLOAT
+   )
+   '''
+   )
+   print('EmployeePerformance table created/exists')
+
 def run_program():
    conn = connect_to_mysql()
    if conn:
       cursor = conn.cursor()
       create_database(cursor)
+      conn.database = 'CompanyData'
+      create_table(cursor)
 
 if __name__ == '__main__':
    run_program()
