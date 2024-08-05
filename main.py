@@ -1,5 +1,8 @@
 import mysql.connector
 import csv
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 def connect_to_mysql():
    try:
@@ -56,6 +59,17 @@ def insert_data(cursor, employees):
    else:
       print("La tabla ya contiene datos. No se insertaron nuevos registros.")
 
+def extract_data():
+   conn = mysql.connector.connect(
+      host='localhost',
+      user='root',
+      password='',
+      database="CompanyData"
+   )
+   query = 'SELECT * FROM EmployeePerformance'
+   df = pd.read_sql(query, conn)
+   conn.close()
+   return df
 
 def run_program():
    conn = connect_to_mysql()
@@ -67,6 +81,7 @@ def run_program():
       filename = 'MOCK_DATA.csv'
       headboard, employees = read_csv(filename)
       insert_data(cursor, employees)
+      df = extract_data()
 
 if __name__ == '__main__':
    run_program()
