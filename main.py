@@ -45,7 +45,6 @@ def read_csv(filename):
       return Headboard, employees
 
 def insert_data(cursor, employees):
-   # Verificar si la tabla está vacía
    cursor.execute('SELECT COUNT(*) FROM EmployeePerformance')
    count = cursor.fetchone()[0]
 
@@ -71,6 +70,43 @@ def extract_data():
    conn.close()
    return df
 
+def analize_data(df):
+
+   statistics = df.groupby('department').agg({
+   'performance_score': ['mean', 'median', 'std'],
+   'salary': ['mean', 'median', 'std'],
+   'employee_id': 'count'
+   }).rename(columns={'employee_id': 'total_employees'})
+   
+   correlation_years_performance = df[['years_with_company', 'performance_score']].corr().iloc[0, 1]
+   correlation_salary_performance = df[['salary', 'performance_score']].corr().iloc[0, 1]
+   
+   return statistics, correlation_years_performance, correlation_salary_performance
+
+def vizualize_data(df):
+   departments = df['department'].unique()
+   for department in departments:
+      plt.figure()
+      df[df['department'] == department]['performance_score'].hist()
+      plt.title(f'Histograma de performance_score para {department}')
+      plt.xlabel('performance_score')
+      plt.ylabel('Frecuencia')
+      plt.show()
+
+   plt.figure()
+   plt.scatter(df['years_with_company'], df['performance_score'])
+   plt.title('Años en la empresa vs. Puntuación de rendimiento')
+   plt.xlabel('Años en la empresa')
+   plt.ylabel('Puntuación de rendimiento')
+   plt.show()
+
+   plt.figure()
+   plt.scatter(df['salary'], df['performance_score'])
+   plt.title('Salario vs. Puntuación de rendimiento')
+   plt.xlabel('Salario')
+   plt.ylabel('Puntuación de rendimiento')
+   plt.show()
+
 def run_program():
    conn = connect_to_mysql()
    if conn:
@@ -82,6 +118,11 @@ def run_program():
       headboard, employees = read_csv(filename)
       insert_data(cursor, employees)
       df = extract_data()
+      statics, correlation_years_performance, correlation_salary_performance = analize_data(df)
+      print(statics)
+      print(f"correlation_years_performance {correlation_years_performance}")
+      print(f"correlation_salary_performance {correlation_salary_performance}")
+      vizualize_data(df)
 
 if __name__ == '__main__':
    run_program()
